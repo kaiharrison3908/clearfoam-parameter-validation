@@ -136,12 +136,12 @@ clearFoam/
 If you prefer command-line operation, you can run OpenFOAM commands directly in the container:
 
 ```bash
-docker exec -it clearfoam_container bash
+docker run -it -v <local_path>:/home/openfoam/<container_path> opencfd/openfoam-default:<version>
 cd /home/openfoam/clearFoam
-source /opt/openfoam/openfoam2406/etc/bashrc
-./allwmake
+./allwmake -j
 cd dev/clearFoam/base
-clearFoam2D
+./clean
+./run
 ```
 
 ### Custom Case Setup
