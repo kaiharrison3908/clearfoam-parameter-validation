@@ -155,7 +155,7 @@ To run your own simulation case:
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](license) file for details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE] file for details.
 
 ## Contributing
 
@@ -164,7 +164,7 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 ## Support
 
 For questions, issues, or support:
-- Create an issue on GitHub: https://github.com/duke-igem-2025/clearFoam/issues
+- Create an issue on GitHub: https://gitlab.igem.org/2025/software-tools/duke/issues
 - Contact the development team
 
 ## Acknowledgments
