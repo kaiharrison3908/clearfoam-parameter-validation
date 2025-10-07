@@ -1,0 +1,24 @@
+#!/bin/bash
+
+cd ${0%/*} || exit 1
+set -x
+
+# if [ -f $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments ]
+# then  . $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+# fi
+
+wmake libraries/numericalMethods
+wmake libraries/parabolicVelocity
+
+wmake solvers/clearFoam2D
+
+wmake utilities/biomass
+wmake utilities/biomass_max
+wmake utilities/sessileBiomass
+wmake utilities/dispersedBiomass
+wmake utilities/lostBiomass
+wmake utilities/eps
+wmake utilities/eps_max
+wmake utilities/autoinducer
+wmake utilities/enzyme
+wmake utilities/inoculumGenerator

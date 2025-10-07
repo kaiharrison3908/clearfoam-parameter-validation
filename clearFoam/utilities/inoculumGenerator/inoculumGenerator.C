@@ -1,0 +1,227 @@
+#include "fvCFD.H"
+#include <fstream>
+#include <stdlib.h>
+#include <time.h>
+#include "HashSet.H"
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Utility to generate initial bacterial inoculum at specified locations and densities
+int main(int argc, char *argv[])
+{
+
+    argList::addOption("patch","word","specify the patch to inoculate");
+    argList::addOption("nbcells","int","specify the number of cells to inoculate");
+
+    argList::addOption("xmin","float","xmin");
+    argList::addOption("xmax","float","xmax");
+    argList::addOption("ymin","float","ymin");
+    argList::addOption("ymax","float","ymax");
+    argList::addOption("zmin","float","zmin");
+    argList::addOption("zmax","float","zmax");
+    
+    Foam::timeSelector::addOptions();  
+    Foam::argList args(argc,argv);
+
+    if (!args.found("patch"))
+    {
+	FatalError << "no value specified" 
+	    << nl << " use option -patch"
+	    << exit(FatalError);
+    }
+
+    if (!args.found("nbcells"))
+    {
+	FatalError << "no value specified" 
+	    << nl << " use option -nbcells"
+	    << exit(FatalError);
+    }
+
+    float xmin;
+    if (args.found("xmin"))
+    {
+	xmin = stof(args.opt("xmin"));
+    }
+    else
+    {
+	xmin = -VGREAT;
+    }
+
+    float xmax;
+    if (args.found("xmax"))
+    {
+	xmax = stof(args.opt("xmax"));
+    }
+    else
+    {
+	xmax = VGREAT;
+    }
+
+    float ymin;
+    if (args.found("ymin"))
+    {
+	ymin = stof(args.opt("ymin"));
+    }
+    else
+    {
+	ymin = -VGREAT;
+    }
+
+    float ymax;
+    if (args.found("ymax"))
+    {
+	ymax = stof(args.opt("ymax"));
+    }
+    else
+    {
+	ymax = VGREAT;
+    }
+
+    float zmin;
+    if (args.found("zmin"))
+    {
+	zmin = stof(args.opt("zmin"));
+    }
+    else
+    {
+	zmin = -VGREAT;
+    }
+
+    float zmax;
+    if (args.found("zmax"))
+    {
+	zmax = stof(args.opt("zmax"));
+    }
+    else
+    {
+	zmax = VGREAT;
+    }
+    
+    Info << endl;
+
+    cout << "box: [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "] [" << zmin << "," << zmax << "]\n\n";
+    
+    //Info << "nbcells: " << args.get<int>("nbcells") << endl;
+
+    #include "createTime.H"  
+    #include "createMesh.H"
+  
+    label patchID = mesh.boundaryMesh().findPatchID(args.get<word>("patch"));
+    const polyPatch& cPatch = mesh.boundaryMesh()[patchID]; 
+
+    Info << "Patch: " << args.get<word>("patch") << endl;
+    Info << cPatch << endl;
+  
+    //Info << cPatch.start() << endl;
+    //Info << cPatch.size() << endl;
+
+    std::ofstream topoFile;
+    topoFile.open("system/topoSetDict");
+
+    topoFile << "FoamFile\n";
+    topoFile << "{\n";
+    topoFile << "    version     2.0;\n";
+    topoFile << "    format      ascii;\n";
+    topoFile << "    class       dictionary;\n";
+    topoFile << "    location    \"system\";\n";
+    topoFile << "    object      topoSetDict;\n";
+    topoFile << "}\n";
+    topoFile << "\n";
+    topoFile << "actions\n";
+    topoFile << "(\n";
+    topoFile << " {\n";
+    topoFile << "   name    inoculum;\n";
+    topoFile << "   type    cellSet;\n";
+    topoFile << "   action  new;\n";
+    topoFile << "   source  labelToCell;\n";
+    topoFile << "   value\n";
+    topoFile << "     (\n";
+
+    int tabCells[args.get<int>("nbcells")];
+
+    srand(42); // not pseudo-random
+  
+labelHashSet selectedCells;
+
+
+for (int i = 0; i < args.get<int>("nbcells"); ++i)
+{
+    int v = rand() % cPatch.size();
+    int faceid = cPatch.start() + v;
+    int cellid = mesh.owner()[faceid];
+    
+    const point& center = mesh.C()[cellid];
+
+    // Bounding box check
+    if ((center.x() < xmin) || (center.x() > xmax) ||
+        (center.y() < ymin) || (center.y() > ymax) ||
+        (center.z() < zmin) || (center.z() > zmax))
+    {
+        i--;
+        continue;
+    }
+
+    // Get nearby cells in the XZ plane
+    scalar dx = 3.5e-5; // slightly over dx = 3.33e-5
+    scalar dz = 1.6e-5; // slightly over dz = 1.575e-5
+
+    labelHashSet newCells;
+
+    forAll(mesh.C(), cellI)
+    {
+        const point& pt = mesh.C()[cellI];
+
+        if (
+            fabs(pt.x() - center.x()) < dx &&
+            fabs(pt.z() - center.z()) < dz &&
+            fabs(pt.y() - center.y()) < 1e-9  // y must match exactly
+        )
+        {
+            newCells.insert(cellI);
+        }
+    }
+
+    // Check for duplicates
+    bool overlap = false;
+    forAllConstIter(labelHashSet, newCells, iter)
+    {
+        if (selectedCells.found(iter.key()))
+        {
+            overlap = true;
+            break;
+        }
+    }
+
+    if (overlap)
+    {
+        i--;
+        continue;
+    }
+
+    // Accept cells
+    forAllConstIter(labelHashSet, newCells, iter)
+    {
+        selectedCells.insert(iter.key());
+        topoFile << "      " << iter.key() << "\n";
+        Info << iter.key() << endl;
+    }
+}
+
+
+
+    topoFile << "      );\n";  
+    topoFile << " }\n";
+    topoFile << " );\n";  
+
+    topoFile.close();
+
+    Info << "\n" << args.get<int>("nbcells") << " cells inoculated in system/topoSetDict" << endl;
+  
+    Info << "\nEnd\n" << endl;
+
+    return 0;
+    
+}
+
+
+// ************************************************************************* //

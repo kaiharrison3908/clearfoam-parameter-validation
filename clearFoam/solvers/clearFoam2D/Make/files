@@ -1,0 +1,3 @@
+clearFoam2D.C
+
+EXE = $(FOAM_USER_APPBIN)/clearFoam2D
