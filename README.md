@@ -32,8 +32,8 @@ Before getting started, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/duke-igem-2025/clearFoam.git
-cd clearFoam
+git clone https://gitlab.igem.org/2025/software-tools/duke.git
+cd duke/clearFoam
 ```
 
 ### 2. Verify Docker Installation
