@@ -44,6 +44,14 @@ Make sure Docker is running on your system:
 docker --version
 ```
 
+If you're using Windows, you may need to fix line endings and file permissions with:
+
+```bash
+apt-get update && apt-get install -y dos2unix 
+find . -type f -maxdepth 1 -exec dos2unix {} \; 
+find . -type f -maxdepth 1 -exec chmod +x {} \;
+```
+
 ### 3. Run the clearFoam GUI Application
 
 Launch the Python GUI application:
