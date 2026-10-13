@@ -7,6 +7,7 @@ import threading
 import re
 import os
 import matplotlib.pyplot as plt
+from parameter_validation import validate_parameters
 
 
 container_name = "clearfoam_container"
@@ -193,7 +194,22 @@ def open_set_parameters():
         }
 
     def save_parameters():
-        """Write updated parameters back into the file in the container."""
+        """Validate edited parameters before writing them to the container."""
+        candidate_parameters = {
+            key: entry.get().strip()
+            for key, entry in entries.items()
+        }
+        errors = validate_parameters(candidate_parameters)
+
+        if errors:
+            messagebox.showerror(
+                "Invalid Parameters",
+                "Please correct the following parameter errors:\n\n"
+                + "\n".join(f"• {error}" for error in errors),
+                parent=param_window,
+            )
+            return
+
         new_content = []
         result = subprocess.run(
             ["docker", "exec", container_name, "cat", f"{container_path}/dev/clearFoam/base/constant/transportProperties"],
