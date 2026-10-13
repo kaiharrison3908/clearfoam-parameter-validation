@@ -178,6 +178,8 @@ For questions, issues, or support:
 
 This branch adds parameter validation to ClearFOAM to help prevent invalid model inputs from reaching the simulation solver.
 
+This repository contains modifications to the original ClearFOAM project. Parameter-validation changes were added on October 13, 2026. The original project and its contributors retain their respective rights and attributions. These modifications are distributed under the GNU General Public License v3.0; see the `license` file for the full terms.
+
 ### Changes
 - Added a parameter validation module to check model inputs before simulation.
 - Integrated validation into the ClearFOAM GUI.
@@ -206,4 +208,3 @@ These changes are intended to improve input handling and provide clearer feedbac
 - Uses OpenCFD's OpenFOAM Docker images
 - Developed for biofilm research applications
 
-This repository contains modifications to the original ClearFOAM project. Parameter-validation changes were added on October 13, 2026. The original project and its contributors retain their respective rights and attributions. These modifications are distributed under the GNU General Public License v3.0; see the `license` file for the full terms.
