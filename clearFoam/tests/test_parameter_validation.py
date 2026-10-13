@@ -33,6 +33,22 @@ class ParameterValidationTests(unittest.TestCase):
             any("Missing required parameter: d1" in error for error in errors)
         )
 
+    def test_rejects_zero_denominator_parameters(self):
+        for name in ("Yxs", "mmax", "E_crit"):
+            with self.subTest(parameter=name):
+                parameters = valid_parameters()
+                parameters[name] = "0"
+
+                errors = validate_parameters(parameters)
+
+                self.assertTrue(
+                    any(
+                        name in error and "cannot be zero" in error
+                        for error in errors
+                    ),
+                    f"Expected zero {name} to be rejected explicitly",
+                )
+
     def test_rejects_empty_value(self):
         parameters = valid_parameters()
         parameters["mum"] = "   "

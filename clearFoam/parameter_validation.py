@@ -62,5 +62,12 @@ def validate_parameters(parameters: Mapping[str, object]) -> list[str]:
 
         if not math.isfinite(number):
             errors.append(f"{name}: value must be finite, not {value!r}.")
+            continue
+
+        if name in {"Yxs", "mmax", "E_crit"} and number == 0:
+            errors.append(
+                f"{name}: value cannot be zero because the model "
+                "uses it as a divisor."
+            )
 
     return errors
