@@ -205,3 +205,5 @@ These changes are intended to improve input handling and provide clearer feedbac
 - Built on OpenFOAM (https://www.openfoam.com/)
 - Uses OpenCFD's OpenFOAM Docker images
 - Developed for biofilm research applications
+
+This repository contains modifications to the original ClearFOAM project. Parameter-validation changes were added on October 13, 2026. The original project and its contributors retain their respective rights and attributions. These modifications are distributed under the GNU General Public License v3.0; see the `license` file for the full terms.
