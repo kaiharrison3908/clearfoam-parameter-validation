@@ -188,6 +188,18 @@ This repository contains modifications to the original ClearFOAM project. Parame
 
 ### Testing
 
+### Running This Branch
+
+To test the parameter-validation changes in this repository:
+
+```bash
+git clone -b feature/parameter-validation https://github.com/kaiharrison3908/clearfoam-parameter-validation.git
+cd clearfoam-parameter-validation/clearFoam
+python -m pytest -q
+```
+
+The tests exercise the parameter validator and its integration assumptions against the project's transport-properties configuration.
+
 The validation tests pass locally:
 
 - **11 tests passed** 
@@ -201,7 +213,7 @@ python -m pytest -q
 
 These changes are intended to improve input handling and provide clearer feedback when model parameters are invalid.
 - Contact the development team
-
+  kaiharrison3908@gmail.com
 ## Acknowledgments
 
 - Built on OpenFOAM (https://www.openfoam.com/)
