@@ -173,6 +173,31 @@ Contributions are welcome! Please feel free to submit issues, feature requests, 
 
 For questions, issues, or support:
 - Create an issue on GitHub: https://gitlab.igem.org/2025/software-tools/duke/issues
+
+## Parameter Validation Improvements
+
+This branch adds parameter validation to ClearFOAM to help prevent invalid model inputs from reaching the simulation solver.
+
+### Changes
+- Added a parameter validation module to check model inputs before simulation.
+- Integrated validation into the ClearFOAM GUI.
+- Added checks that reject zero-valued `Yxs`, `mmax`, and `E_crit` parameters, which are used as divisors in the model.
+- Added automated tests covering valid inputs and invalid parameter values.
+
+### Testing
+
+The validation tests pass locally:
+
+- **11 tests passed**
+- **7 subtests passed**
+
+To run the tests from the project environment:
+
+```bash
+python -m pytest -q
+```
+
+These changes are intended to improve input handling and provide clearer feedback when model parameters are invalid.
 - Contact the development team
 
 ## Acknowledgments
