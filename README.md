@@ -190,7 +190,7 @@ This repository contains modifications to the original ClearFOAM project. Parame
 
 The validation tests pass locally:
 
-- **11 tests passed**
+- **11 tests passed** 
 - **7 subtests passed**
 
 To run the tests from the project environment:
